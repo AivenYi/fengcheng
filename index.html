@@ -1,0 +1,1369 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的家乡 - 江西丰城</title>
+    <!-- 添加Three.js库用于3D效果 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <!-- 添加GSAP动画库 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/gsap.min.js"></script>
+    <!-- 添加ScrollTrigger插件 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.9.1/ScrollTrigger.min.js"></script>
+    <!-- 添加粒子效果 -->
+    <script src="particles.js" defer></script>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Noto Sans SC', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f8f9fa;
+            overflow-x: hidden; /* 防止水平滚动条 */
+            perspective: 1000px; /* 为3D效果添加透视 */
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4a6fa5, #166d67);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://example.com/fengcheng-bg.jpg') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        nav {
+            background-color: #166d67;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.5s ease;
+        }
+        
+        /* 滚动时导航栏变小效果 */
+        nav.scrolled {
+            padding: 0.5rem 0;
+            background-color: rgba(22, 109, 103, 0.95);
+            backdrop-filter: blur(10px);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1.5rem;
+            position: relative;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+            display: block;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* 导航项悬停效果 */
+        nav a::before {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 0;
+            background-color: rgba(255,255,255,0.2);
+            transition: height 0.3s ease;
+            z-index: -1;
+            border-radius: 4px;
+        }
+        
+        nav a:hover::before {
+            height: 100%;
+        }
+        
+        /* 下拉菜单样式 */
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: rgba(22, 109, 103, 0.9);
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1000;
+            border-radius: 4px;
+            margin-top: 5px;
+        }
+        
+        .dropdown-content a {
+            color: white;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            transition: all 0.3s ease;
+        }
+        
+        .dropdown-content a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+        
+        .dropdown:hover .dropdown-content {
+            display: block;
+        }
+        
+        /* 活跃导航项指示器 */
+        nav a.active::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background-color: white;
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(255,255,255,0.8);
+        }
+        
+        nav a:hover {
+            transform: translateY(-3px);
+            text-shadow: 0 0 5px rgba(255,255,255,0.5);
+        }
+        
+        .container {
+            width: 100%;
+            max-width: 100%;
+            margin: 0 auto;
+            padding: 0 2rem;
+            box-sizing: border-box;
+        }
+        
+        .section {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            text-align: center;
+            color: #166d67;
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4a6fa5;
+        }
+        
+        h3 {
+            color: #4a6fa5;
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .responsive-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .responsive-img:hover {
+            transform: scale(1.02);
+        }
+        
+        /* 地理位置和地形气候部分样式 */
+        .geo-climate-container {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+            margin: 1rem 0 2rem;
+        }
+        
+        .geo-section {
+            display: flex;
+            background-color: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .geo-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.12);
+        }
+        
+        .geo-image {
+            flex: 1;
+            min-width: 40%;
+            overflow: hidden;
+        }
+        
+        .geo-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            margin: 0;
+            transition: transform 0.5s ease;
+        }
+        
+        .geo-section:hover .geo-image img {
+            transform: scale(1.05);
+        }
+        
+        .geo-content {
+            flex: 1.5;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .geo-content h3 {
+            color: #166d67;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            font-size: 1.5rem;
+            position: relative;
+        }
+        
+        .geo-content h3:after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: linear-gradient(90deg, #4a6fa5, #166d67);
+        }
+        
+        .geo-highlight {
+            display: flex;
+            align-items: center;
+            margin-top: 1rem;
+            padding: 0.5rem 1rem;
+            background-color: #f0f7f7;
+            border-radius: 30px;
+            width: fit-content;
+        }
+        
+        .geo-icon {
+            font-size: 1.2rem;
+            margin-right: 0.5rem;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+            perspective: 1000px; /* 为3D效果添加透视 */
+        }
+        
+        .gallery-item {
+            position: relative;
+            height: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            cursor: pointer;
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.5s;
+            backface-visibility: hidden;
+        }
+        
+        .gallery-item .caption {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background: rgba(22, 109, 103, 0.85);
+            color: white;
+            padding: 1rem;
+            opacity: 0;
+            transform: rotateY(180deg);
+            backface-visibility: hidden;
+            transition: opacity 0.5s;
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .gallery-item:hover {
+            transform: rotateY(180deg) scale(1.05);
+            box-shadow: 0 15px 25px rgba(0,0,0,0.2);
+            z-index: 10;
+        }
+        
+        .gallery-item:hover .caption {
+            opacity: 1;
+        }
+        
+        /* 3D悬停效果 */
+        .gallery-item.hover-3d {
+            transform: perspective(1000px) rotateX(0) rotateY(0);
+            transition: transform 0.3s ease;
+        }
+        
+        .feature-box {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4a6fa5;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            background-color: #f0f7f7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+        
+        .feature::before {
+            content: '';
+            position: absolute;
+            top: -100%;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(74, 111, 165, 0.2), rgba(22, 109, 103, 0.2));
+            transition: all 0.5s ease;
+            z-index: 0;
+        }
+        
+        .feature:hover {
+            transform: translateY(-10px) rotateX(5deg) rotateY(5deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15), 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature:hover::before {
+            top: 0;
+        }
+        
+        .feature h3 {
+            color: #166d67;
+            margin-top: 0;
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover h3 {
+            transform: translateZ(20px);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #4a6fa5;
+            margin-bottom: 1rem;
+            position: relative;
+            z-index: 1;
+            transition: all 0.5s ease;
+            display: inline-block;
+        }
+        
+        .feature:hover .feature-icon {
+            transform: translateZ(30px) scale(1.2) rotate(10deg);
+            text-shadow: 0 0 15px rgba(74, 111, 165, 0.5);
+        }
+        
+        .feature p {
+            position: relative;
+            z-index: 1;
+            transition: transform 0.3s ease;
+        }
+        
+        .feature:hover p {
+            transform: translateZ(10px);
+        }
+        
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        .member {
+            text-align: center;
+            width: 180px;
+        }
+        
+        .member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 4px solid #4a6fa5;
+            transition: all 0.3s;
+        }
+        
+        .member img:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .member h4 {
+            margin: 0.5rem 0;
+            color: #333;
+        }
+        
+        .member p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #166d67, #4a6fa5);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            margin: 0.5rem 0;
+        }
+        
+        .history-timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #4a6fa5;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #166d67;
+            border: 3px solid #4a6fa5;
+        }
+        
+        .timeline-year {
+            font-weight: bold;
+            color: #166d67;
+            margin-bottom: 0.5rem;
+        }
+        
+        .culture-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transform-style: preserve-3d;
+            perspective: 1000px;
+            position: relative;
+        }
+        
+        .culture-card:hover {
+            transform: scale(1.02) rotateX(2deg) rotateY(2deg);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
+        }
+        
+        .culture-img {
+            flex: 0 0 40%;
+            max-width: 40%;
+            position: relative;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .culture-img::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, rgba(22, 109, 103, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        .culture-card:hover .culture-img::after {
+            opacity: 1;
+        }
+        
+        .culture-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .culture-card:hover .culture-img img {
+            transform: scale(1.1) translateZ(20px);
+        }
+        
+        .culture-content {
+            flex: 1;
+            padding: 1.5rem;
+            transform-style: preserve-3d;
+            transition: transform 0.5s ease;
+        }
+        
+        .culture-card:hover .culture-content {
+            transform: translateZ(30px);
+        }
+        
+        .culture-content h3 {
+            transition: transform 0.5s ease, color 0.3s ease;
+        }
+        
+        .culture-card:hover .culture-content h3 {
+            transform: translateZ(40px);
+            color: #166d67;
+        }
+        
+        /* 视差滚动效果 */
+        .parallax-section {
+            position: relative;
+            padding: 2rem 0;
+            overflow: hidden;
+            transform-style: preserve-3d;
+        }
+        
+        .parallax-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 120%;
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            z-index: -1;
+            opacity: 0.15;
+        }
+        
+        /* 3D裸眼效果 */
+        .stereo-3d {
+            transform-style: preserve-3d;
+            perspective: 1000px;
+        }
+        
+        .stereo-3d-element {
+            transform: translateZ(50px);
+            transition: transform 0.5s ease;
+        }
+        
+        /* 3D旋转照片墙 */
+        .photo-wall-container {
+            margin: 50px auto;
+            max-width: 1000px;
+            text-align: center;
+        }
+        
+        .photo-wall-container h4 {
+            font-size: 2rem;
+            margin-bottom: 30px;
+            color: #333;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+        
+        .photo-wall {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            transform-style: preserve-3d;
+            animation: photoWallRotate 30s linear infinite;
+            margin: 50px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .photo-item {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 200px;
+            height: 300px;
+            background: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            transform-origin: center;
+            transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(350px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            transition: all 0.5s ease;
+        }
+        
+        .photo-item img {
+            width: 100%;
+            height: 80%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-info {
+            padding: 10px;
+            background: rgba(255,255,255,0.9);
+            transition: transform 0.5s ease;
+        }
+        
+        .photo-info h4 {
+            margin: 0;
+            font-size: 1rem;
+            color: #333;
+        }
+        
+        .photo-info p {
+            margin: 5px 0 0;
+            font-size: 0.8rem;
+            color: #666;
+        }
+        
+        .photo-item:hover {
+            transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(380px) scale(1.1);
+            z-index: 10;
+        }
+        
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+        
+        @keyframes photoWallRotate {
+            0% {
+                transform: rotateY(0);
+            }
+            100% {
+                transform: rotateY(360deg);
+            }
+        }
+        
+        /* 文化卡片容器 */
+        .culture-cards-container {
+            margin-top: 80px;
+        }
+        
+        /* 动画效果 */
+        .fade-in {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .fade-in.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .scale-in {
+            opacity: 0;
+            transform: scale(0.8);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .scale-in.visible {
+            opacity: 1;
+            transform: scale(1);
+        }
+        
+        .rotate-in {
+            opacity: 0;
+            transform: rotateY(90deg);
+            transition: opacity 0.8s ease, transform 0.8s ease;
+        }
+        
+        .rotate-in.visible {
+            opacity: 1;
+            transform: rotateY(0);
+        }
+        
+        /* 3D悬停卡片 */
+        .hover-3d-card {
+            transform-style: preserve-3d;
+            transition: transform 0.3s ease;
+        }
+        
+        /* 响应式调整 */
+        @media (max-width: 768px) {
+            .culture-card {
+                flex-direction: column;
+            }
+            
+            .culture-img {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.5rem 0;
+            }
+            
+            .stereo-3d-element {
+                transform: translateZ(20px); /* 移动设备上减小3D效果 */
+            }
+            
+            .photo-wall {
+                height: 300px;
+            }
+            
+            .photo-item {
+                width: 150px;
+                height: 220px;
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(250px);
+            }
+            
+            .photo-item:hover {
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(270px) scale(1.1);
+            }
+            
+            .geo-section {
+                flex-direction: column;
+            }
+            
+            .geo-image {
+                min-height: 200px;
+            }
+            
+            .geo-section:nth-child(even) {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .photo-wall {
+                height: 200px;
+            }
+            
+            .photo-item {
+                width: 120px;
+                height: 180px;
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(180px);
+            }
+            
+            .photo-item:hover {
+                transform: translate(-50%, -50%) rotateY(calc(var(--i) * 60deg)) translateZ(200px) scale(1.1);
+            }
+            
+            .photo-info h4 {
+                font-size: 0.8rem;
+            }
+            
+            .photo-info p {
+                font-size: 0.7rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>江西丰城 - 剑邑煤海 赣中明珠</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">首页</a></li>
+            <li class="dropdown">
+                <a href="#about">历史与文化</a>
+                <div class="dropdown-content">
+                    <a href="#history-timeline">历史沿革</a>
+                    <a href="#cultural-treasures">文化瑰宝</a>
+                    <a href="#folk-customs">民俗风情</a>
+                </div>
+            </li>
+            <li><a href="#gallery">风景相册</a></li>
+            <li><a href="#features">特色亮点</a></li>
+            <li><a href="#team">小组成员</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="home" class="section">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 2.2rem; color: #166d67;">我们的家乡丰城</h2>
+                <p style="font-size: 1.2rem; color: #666;">千年剑邑 赣中福地</p>
+            </div>
+            
+            <div class="geo-climate-container">
+                <div class="geo-section hover-3d" data-tilt>
+                    <div class="geo-image">
+                        <img src="images\地理.jpg" alt="丰城地理位置图" class="responsive-img">
+                    </div>
+                    <div class="geo-content">
+                        <h3>地理位置</h3>
+                        <p>丰城地处江西省中部，赣江中下游地区，东临抚州，南接樟树，西靠高安，北连南昌。全市总面积2845平方公里，辖32个乡镇（街道），人口约150万。</p>
+                        <div class="geo-highlight">
+                            <span class="geo-icon">📍</span>
+                            <span>江西省中部 · 赣江中下游</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="geo-section hover-3d" data-tilt>
+                    <div class="geo-content">
+                        <h3>地形气候</h3>
+                        <p>丰城以平原和丘陵为主，地势较为平坦，水资源丰富，赣江及其支流形成发达的灌溉网络。属亚热带湿润气候，四季分明，雨量充沛，年平均气温17.5℃，年降水量1600毫米左右。</p>
+                        <div class="geo-highlight">
+                            <span class="geo-icon">🌤️</span>
+                            <span>亚热带湿润气候 · 年均温17.5℃</span>
+                        </div>
+                    </div>
+                    <div class="geo-image">
+                        <img src="images\气候.jpg" alt="丰城地形景观" class="responsive-img">
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="about" class="section parallax-section">
+            <div class="parallax-bg" style="background-image: url('images\\剑遗址.jpg'); opacity: 0.1;"></div>
+            <h2 class="stereo-3d"><span class="stereo-3d-element">历史与文化</span></h2>
+            
+            <div id="history-timeline" class="history-timeline stereo-3d">
+                <h3>历史沿革</h3>
+                <div class="timeline-item">
+                    <div class="timeline-year stereo-3d-element">东汉建安十五年（210年）</div>
+                    <p>置县，初名"富城"，后因避讳改称"丰城"</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year stereo-3d-element">唐代</div>
+                    <p>属洪州（今南昌），因"龙泉、太阿"宝剑传说闻名</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year stereo-3d-element">宋代</div>
+                    <p>赣江水运兴盛，成为商贸重镇</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year stereo-3d-element">明清时期</div>
+                    <p>隶属南昌府，科举文化鼎盛，涌现众多进士</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year stereo-3d-element">1988年</div>
+                    <p>撤县设市（县级市）</p>
+                </div>
+            </div>
+            
+            <h3 id="cultural-treasures">文化瑰宝</h3>
+            
+            <!-- 3D旋转照片墙 -->
+            <div class="photo-wall-container stereo-3d">
+                <h4 class="stereo-3d-element">丰城文化影像</h4>
+                <div class="photo-wall">
+                    <div class="photo-item" style="--i:1;">
+                        <img src="images\剑.jpg" alt="丰城剑文化">
+                        <div class="photo-info">
+                            <h4>剑文化</h4>
+                            <p>龙光射牛斗之墟</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:2;">
+                        <img src="images\洪州窑遗址.jpg" alt="洪州窑遗址">
+                        <div class="photo-info">
+                            <h4>洪州窑</h4>
+                            <p>唐代六大青瓷名窑</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:3;">
+                        <img src="images\邓子龙像.jpg" alt="邓子龙像">
+                        <div class="photo-info">
+                            <h4>邓子龙</h4>
+                            <p>明代抗倭名将</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:4;">
+                        <img src="images\博物馆.jpg" alt="丰城博物馆">
+                        <div class="photo-info">
+                            <h4>丰城博物馆</h4>
+                            <p>文化传承之地</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:5;">
+                        <img src="images\剑遗址.jpg" alt="剑池遗址">
+                        <div class="photo-info">
+                            <h4>剑池遗址</h4>
+                            <p>千年文化遗存</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:6;">
+                        <img src="images\老街.jpg" alt="丰城老街">
+                        <div class="photo-info">
+                            <h4>丰城老街</h4>
+                            <p>古城文化记忆</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:7;">
+                        <img src="images\采茶戏.jpg" alt="丰城采茶戏">
+                        <div class="photo-info">
+                            <h4>采茶戏</h4>
+                            <p>地方戏曲瑰宝</p>
+                        </div>
+                    </div>
+                    <div class="photo-item" style="--i:8;">
+                        <img src="images\冻米糖.jpg" alt="丰城冻米糖">
+                        <div class="photo-info">
+                            <h4>冻米糖</h4>
+                            <p>传统美食文化</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="culture-cards-container">
+                <div class="culture-card hover-3d" data-tilt>
+                    <div class="culture-img">
+                        <img src="images\剑.jpg" alt="丰城剑文化">
+                    </div>
+                    <div class="culture-content">
+                        <h3>剑文化 - "龙光射牛斗之墟"</h3>
+                        <p>丰城是古代宝剑之乡，唐代王勃《滕王阁序》中"物华天宝，龙光射牛斗之墟"即指丰城宝剑的典故。相传晋代雷焕在此掘得"龙泉""太阿"二剑，现存"剑池""剑光亭"等遗迹。</p>
+                    </div>
+                </div>
+                
+                <div class="culture-card hover-3d" data-tilt>
+                    <div class="culture-img">
+                        <img src="images\洪州窑遗址.jpg" alt="洪州窑遗址">
+                    </div>
+                    <div class="culture-content">
+                        <h3>洪州窑 - 唐代六大青瓷名窑</h3>
+                        <p>始烧于东汉，盛于唐代，以青瓷闻名，遗址位于曲江镇罗湖村，现为全国重点文物保护单位。其瓷器釉色青翠，器型多样，远销日本、东南亚等地。</p>
+                    </div>
+                </div>
+                
+                <div class="culture-card hover-3d" data-tilt>
+                    <div class="culture-img">
+                        <img src="images\邓子龙像.jpg" alt="邓子龙像">
+                    </div>
+                    <div class="culture-content">
+                        <h3>历史名人</h3>
+                        <p><strong>邓子龙</strong>：明代抗倭名将，丰城杜市镇人，曾率军抗击倭寇。<br>
+                        <strong>揭暄</strong>：清代天文学家，著有《璇玑遗述》。<br>
+                        <strong>科举文化</strong>：明清两代丰城进士超200人，被誉为"才子之乡"。</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 id="folk-customs">民俗风情</h3>
+            <div class="features-grid">
+                <div class="feature hover-3d" data-tilt>
+                    <div class="feature-icon">🎭</div>
+                    <h3>采茶戏</h3>
+                    <p>江西传统戏曲，丰城地方唱腔独具特色，常在节庆时演出。</p>
+                </div>
+                <div class="feature hover-3d" data-tilt>
+                    <div class="feature-icon">🚣</div>
+                    <h3>龙舟赛</h3>
+                    <p>赣江沿岸村落端午期间举办龙舟竞渡，热闹非凡。</p>
+                </div>
+                <div class="feature hover-3d" data-tilt>
+                    <div class="feature-icon">🍬</div>
+                    <h3>冻米糖</h3>
+                    <p>传统小吃，酥脆香甜，制作技艺入选地方非遗。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gallery" class="section">
+            <h2 class="stereo-3d"><span class="stereo-3d-element">风景相册</span></h2>
+            <div class="gallery">
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\赣江风光.jpg" alt="丰城赣江风光">
+                    <div class="caption">
+                        <h3>赣江风光</h3>
+                        <p>赣江穿城而过，两岸风光秀丽</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\剑遗址.jpg" alt="剑池遗址">
+                    <div class="caption">
+                        <h3>剑池遗址</h3>
+                        <p>千年剑文化的历史见证</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\洪州窑遗址.jpg" alt="洪州窑博物馆">
+                    <div class="caption">
+                        <h3>洪州窑博物馆</h3>
+                        <p>展示唐代青瓷制作工艺</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\玉华山云海.jpg" alt="玉华山云海">
+                    <div class="caption">
+                        <h3>玉华山云海</h3>
+                        <p>云雾缭绕，如临仙境</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\丰水湖.jpg" alt="丰水湖公园">
+                    <div class="caption">
+                        <h3>丰水湖公园</h3>
+                        <p>城市中心的生态绿肺</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\老街.jpg" alt="丰城老街">
+                    <div class="caption">
+                        <h3>丰城老街</h3>
+                        <p>保存完好的明清建筑群</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\冻米糖.jpg" alt="冻米糖制作">
+                    <div class="caption">
+                        <h3>冻米糖制作</h3>
+                        <p>传统手工艺的传承</p>
+                    </div>
+                </div>
+                <div class="gallery-item hover-3d" data-tilt>
+                    <img src="images\丰城夜景.jpg" alt="丰城夜景">
+                    <div class="caption">
+                        <h3>丰城夜景</h3>
+                        <p>灯火辉煌的现代城市风貌</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        
+        <section id="features" class="section">
+            <h2 class="stereo-3d"><span class="stereo-3d-element">特色亮点</span></h2>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">⚔️</div>
+                    <h3>剑文化发源地</h3>
+                    <p>"龙泉、太阿"宝剑传说地，剑池、剑光亭等历史遗迹保存完好。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏺</div>
+                    <h3>洪州窑遗址</h3>
+                    <p>唐代六大青瓷名窑之一，国家级文物保护单位。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⛰️</div>
+                    <h3>玉华山</h3>
+                    <p>赣中名山，奇石云海，佛教文化圣地。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏭</div>
+                    <h3>能源重镇</h3>
+                    <p>"江南煤海"，丰城发电厂是江西重要能源基地。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🍚</div>
+                    <h3>富硒农产品</h3>
+                    <p>土壤含硒，出产富硒大米、禽蛋等健康食品。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎋</div>
+                    <h3>传统手工艺</h3>
+                    <p>冻米糖、竹编等传统技艺传承至今。</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem; background-color: #f0f7f7; padding: 1.5rem; border-radius: 8px;">
+                <h3>丰城三宝</h3>
+                <p><strong>宝剑</strong>：象征丰城悠久的历史文化<br>
+                <strong>青瓷</strong>：代表丰城古代工艺的高超水平<br>
+                <strong>冻米糖</strong>：体现丰城传统饮食文化的精髓</p>
+            </div>
+        </section>
+        
+        <section id="team" class="section">
+            <h2 class="stereo-3d"><span class="stereo-3d-element">小组成员</span></h2>
+            <p style="text-align: center; margin-bottom: 2rem;">我们小组深入研究了丰城的历史文化，以下是我们的成员分工：</p>
+            
+            <div class="team-members">
+                <div class="member">
+                    <img src="https://example.com/member1.jpg" alt="曹宇">
+                    <h4>曹宇</h4>
+                    <p>组长，负责整体架构与历史研究</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member2.jpg" alt="朱凯旋">
+                    <h4>朱凯旋</h4>
+                    <p>文化资料收集与文案撰写</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member3.jpg" alt="柯信淳">
+                    <h4>柯信醇</h4>
+                    <p>图片收集与页面设计</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member4.jpg" alt="饶雨林">
+                    <h4>饶雨林</h4>
+                    <p>特色亮点研究与内容校对</p>
+                </div>
+                <div class="member">
+                    <img src="images\易海.jpg" alt="易海">
+                    <h4>易海</h4>
+                    <p>讲解人，负责内容讲解与展示</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 丰城文化研究小组. 保留所有权利.</p>
+        <p>《地方文化研究》课程作业 | 指导教师：赖炜鹏教授</p>
+        <p style="margin-top: 1rem;">联系我们：fengcheng@example.com</p>
+    </footer>
+    
+    <!-- 添加vanilla-tilt.js库用于3D悬停效果 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    
+    <script>
+        // 初始化GSAP和ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+        
+        // 导航栏滚动效果
+        window.addEventListener('scroll', function() {
+            const nav = document.querySelector('nav');
+            if (window.scrollY > 100) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        });
+        
+        // 导航项活跃状态
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+        
+        window.addEventListener('scroll', function() {
+            let current = '';
+            
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop;
+                const sectionHeight = section.clientHeight;
+                if (pageYOffset >= (sectionTop - sectionHeight / 3)) {
+                    current = section.getAttribute('id');
+                }
+            });
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+        
+        // 初始化3D悬停效果
+        VanillaTilt.init(document.querySelectorAll(".gallery-item"), {
+            max: 25,
+            speed: 400,
+            glare: true,
+            "max-glare": 0.5,
+        });
+        
+        // 3D卡片悬停效果
+        const features = document.querySelectorAll('.feature');
+        features.forEach(feature => {
+            feature.addEventListener('mousemove', function(e) {
+                const rect = this.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateX = (y - centerY) / 10;
+                const rotateY = (centerX - x) / 10;
+                
+                this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateZ(10px)`;
+            });
+            
+            feature.addEventListener('mouseleave', function() {
+                this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0) translateZ(0)';
+            });
+        });
+        
+        // 视差滚动效果
+        const parallaxSections = document.querySelectorAll('.parallax-section');
+        parallaxSections.forEach(section => {
+            const bg = section.querySelector('.parallax-bg');
+            if (bg) {
+                gsap.to(bg, {
+                    y: 100,
+                    ease: "none",
+                    scrollTrigger: {
+                        trigger: section,
+                        start: "top bottom",
+                        end: "bottom top",
+                        scrub: true
+                    }
+                });
+            }
+        });
+        
+        // 滚动动画
+        const fadeElements = document.querySelectorAll('.fade-in');
+        fadeElements.forEach(element => {
+            gsap.from(element, {
+                opacity: 0,
+                y: 50,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 80%",
+                    toggleClass: "visible"
+                }
+            });
+        });
+        
+        const scaleElements = document.querySelectorAll('.scale-in');
+        scaleElements.forEach(element => {
+            gsap.from(element, {
+                opacity: 0,
+                scale: 0.8,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 80%",
+                    toggleClass: "visible"
+                }
+            });
+        });
+        
+        const rotateElements = document.querySelectorAll('.rotate-in');
+        rotateElements.forEach(element => {
+            gsap.from(element, {
+                opacity: 0,
+                rotationY: 90,
+                duration: 1,
+                scrollTrigger: {
+                    trigger: element,
+                    start: "top 80%",
+                    toggleClass: "visible"
+                }
+            });
+        });
+        
+        // 3D裸眼效果 - 根据鼠标位置调整透视
+        const stereo3dElements = document.querySelectorAll('.stereo-3d-element');
+        document.addEventListener('mousemove', function(e) {
+            const mouseX = e.clientX / window.innerWidth - 0.5;
+            const mouseY = e.clientY / window.innerHeight - 0.5;
+            
+            stereo3dElements.forEach(element => {
+                const depth = element.getAttribute('data-depth') || 20;
+                element.style.transform = `translateZ(${depth}px) rotateY(${mouseX * 20}deg) rotateX(${-mouseY * 20}deg)`;
+            });
+        });
+        
+        // 为gallery-item添加3D效果
+        document.querySelectorAll('.gallery-item').forEach(item => {
+            item.addEventListener('mousemove', function(e) {
+                if (!this.classList.contains('hover-3d')) {
+                    const rect = this.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+                    
+                    const centerX = rect.width / 2;
+                    const centerY = rect.height / 2;
+                    
+                    const rotateX = (y - centerY) / 10;
+                    const rotateY = (centerX - x) / 10;
+                    
+                    this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
+                }
+            });
+            
+            item.addEventListener('mouseleave', function() {
+                if (!this.classList.contains('hover-3d')) {
+                    this.style.transform = 'perspective(1000px) rotateX(0) rotateY(0)';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

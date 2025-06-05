@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>我们的家乡 - 江西丰城</title>
+    <style>
+        /* 基础样式 */
+        body {
+            font-family: 'Microsoft YaHei', sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            background-color: #f5f5f5;
+        }
+        
+        header {
+            background: linear-gradient(135deg, #4a6fa5, #166d67);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        header::before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://example.com/fengcheng-bg.jpg') center/cover;
+            opacity: 0.3;
+            z-index: 0;
+        }
+        
+        header h1 {
+            position: relative;
+            z-index: 1;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+        }
+        
+        nav {
+            background-color: #166d67;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        nav ul {
+            display: flex;
+            justify-content: center;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-wrap: wrap;
+        }
+        
+        nav li {
+            margin: 0 1.5rem;
+        }
+        
+        nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 1.1rem;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            transition: all 0.3s;
+        }
+        
+        nav a:hover {
+            background-color: rgba(255,255,255,0.2);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            background-color: white;
+            box-shadow: 0 0 20px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            margin-top: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .section {
+            margin-bottom: 3rem;
+            padding: 1.5rem;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+        
+        h2 {
+            color: #166d67;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid #4a6fa5;
+        }
+        
+        h3 {
+            color: #4a6fa5;
+            font-size: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .responsive-img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin: 1.5rem auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            transition: transform 0.3s;
+        }
+        
+        .responsive-img:hover {
+            transform: scale(1.02);
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+        
+        .gallery img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: all 0.3s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .gallery img:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 15px rgba(0,0,0,0.2);
+        }
+        
+        .feature-box {
+            background-color: #f9f9f9;
+            padding: 1.5rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid #4a6fa5;
+        }
+        
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature {
+            background-color: #f0f7f7;
+            padding: 1.5rem;
+            border-radius: 8px;
+            transition: all 0.3s;
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        
+        .feature h3 {
+            color: #166d67;
+            margin-top: 0;
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            color: #4a6fa5;
+            margin-bottom: 1rem;
+        }
+        
+        .team-members {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+        
+        .member {
+            text-align: center;
+            width: 180px;
+        }
+        
+        .member img {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin-bottom: 1rem;
+            border: 4px solid #4a6fa5;
+            transition: all 0.3s;
+        }
+        
+        .member img:hover {
+            transform: rotate(5deg) scale(1.05);
+        }
+        
+        .member h4 {
+            margin: 0.5rem 0;
+            color: #333;
+        }
+        
+        .member p {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            background: linear-gradient(135deg, #166d67, #4a6fa5);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+            margin-top: 3rem;
+        }
+        
+        footer p {
+            margin: 0.5rem 0;
+        }
+        
+        .history-timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+        
+        .history-timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background-color: #4a6fa5;
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+            padding-left: 2rem;
+        }
+        
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -10px;
+            top: 8px;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            background-color: #166d67;
+            border: 3px solid #4a6fa5;
+        }
+        
+        .timeline-year {
+            font-weight: bold;
+            color: #166d67;
+            margin-bottom: 0.5rem;
+        }
+        
+        .culture-card {
+            display: flex;
+            align-items: center;
+            margin-bottom: 2rem;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .culture-img {
+            flex: 0 0 40%;
+            max-width: 40%;
+        }
+        
+        .culture-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .culture-content {
+            flex: 1;
+            padding: 1.5rem;
+        }
+        
+        @media (max-width: 768px) {
+            .culture-card {
+                flex-direction: column;
+            }
+            
+            .culture-img {
+                flex: 0 0 100%;
+                max-width: 100%;
+            }
+            
+            nav ul {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav li {
+                margin: 0.5rem 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>江西丰城 - 剑邑煤海 赣中明珠</h1>
+    </header>
+    
+    <nav>
+        <ul>
+            <li><a href="#home">首页</a></li>
+            <li><a href="#about">历史与文化</a></li>
+            <li><a href="#gallery">风景相册</a></li>
+            <li><a href="#features">特色亮点</a></li>
+            <li><a href="#team">小组成员</a></li>
+        </ul>
+    </nav>
+    
+    <div class="container">
+        <section id="home" class="section">
+            <div style="text-align: center; margin-bottom: 2rem;">
+                <h2 style="font-size: 2.2rem; color: #166d67;">我们的家乡丰城</h2>
+                <p style="font-size: 1.2rem; color: #666;">千年剑邑 赣中福地</p>
+            </div>
+            
+            <div class="feature-box">
+                <h3>地理位置</h3>
+                <p>丰城地处江西省中部，赣江中下游地区，东临抚州，南接樟树，西靠高安，北连南昌。全市总面积2845平方公里，辖32个乡镇（街道），人口约150万。</p>
+                <img src="images\地理.jpg" alt="丰城地理位置图" class="responsive-img">
+            </div>
+            
+            <div class="feature-box">
+                <h3>地形气候</h3>
+                <p>丰城以平原和丘陵为主，地势较为平坦，水资源丰富，赣江及其支流形成发达的灌溉网络。属亚热带湿润气候，四季分明，雨量充沛，年平均气温17.5℃，年降水量1600毫米左右。</p>
+                <img src="images\气候.jpg" alt="丰城地形景观" class="responsive-img">
+            </div>
+        </section>
+        
+        <section id="about" class="section">
+            <h2>历史与文化</h2>
+            
+            <div class="history-timeline">
+                <h3>历史沿革</h3>
+                <div class="timeline-item">
+                    <div class="timeline-year">东汉建安十五年（210年）</div>
+                    <p>置县，初名"富城"，后因避讳改称"丰城"</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">唐代</div>
+                    <p>属洪州（今南昌），因"龙泉、太阿"宝剑传说闻名</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">宋代</div>
+                    <p>赣江水运兴盛，成为商贸重镇</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">明清时期</div>
+                    <p>隶属南昌府，科举文化鼎盛，涌现众多进士</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1988年</div>
+                    <p>撤县设市（县级市）</p>
+                </div>
+            </div>
+            
+            <h3>文化瑰宝</h3>
+            
+            <div class="culture-card">
+                <div class="culture-img">
+                    <img src="images\剑.jpg" alt="丰城剑文化">
+                </div>
+                <div class="culture-content">
+                    <h3>剑文化 - "龙光射牛斗之墟"</h3>
+                    <p>丰城是古代宝剑之乡，唐代王勃《滕王阁序》中"物华天宝，龙光射牛斗之墟"即指丰城宝剑的典故。相传晋代雷焕在此掘得"龙泉""太阿"二剑，现存"剑池""剑光亭"等遗迹。</p>
+                </div>
+            </div>
+            
+            <div class="culture-card">
+                <div class="culture-img">
+                    <img src="images\洪州窑遗址.jpg" alt="洪州窑遗址">
+                </div>
+                <div class="culture-content">
+                    <h3>洪州窑 - 唐代六大青瓷名窑</h3>
+                    <p>始烧于东汉，盛于唐代，以青瓷闻名，遗址位于曲江镇罗湖村，现为全国重点文物保护单位。其瓷器釉色青翠，器型多样，远销日本、东南亚等地。</p>
+                </div>
+            </div>
+            
+            <div class="culture-card">
+                <div class="culture-img">
+                    <img src="images\邓子龙像.jpg" alt="邓子龙像">
+                </div>
+                <div class="culture-content">
+                    <h3>历史名人</h3>
+                    <p><strong>邓子龙</strong>：明代抗倭名将，丰城杜市镇人，曾率军抗击倭寇。<br>
+                    <strong>揭暄</strong>：清代天文学家，著有《璇玑遗述》。<br>
+                    <strong>科举文化</strong>：明清两代丰城进士超200人，被誉为"才子之乡"。</p>
+                </div>
+            </div>
+            
+            <h3>民俗风情</h3>
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">🎭</div>
+                    <h3>采茶戏</h3>
+                    <p>江西传统戏曲，丰城地方唱腔独具特色，常在节庆时演出。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🚣</div>
+                    <h3>龙舟赛</h3>
+                    <p>赣江沿岸村落端午期间举办龙舟竞渡，热闹非凡。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🍬</div>
+                    <h3>冻米糖</h3>
+                    <p>传统小吃，酥脆香甜，制作技艺入选地方非遗。</p>
+                </div>
+            </div>
+        </section>
+        
+        <section id="gallery" class="section">
+            <h2>风景相册</h2>
+            <div class="gallery">
+                <img src="images\赣江风光.jpg" alt="丰城赣江风光">
+                <img src="images\剑遗址.jpg" alt="剑池遗址">
+                <img src="images\洪州窑遗址.jpg" alt="洪州窑博物馆">
+                <img src="images\玉华山云海.jpg" alt="玉华山云海">
+                <img src="images\丰水湖.jpg" alt="丰水湖公园">
+                <img src="images\老街.jpg" alt="丰城老街">
+                <img src="images\冻米糖.jpg" alt="冻米糖制作">
+                <img src="images\丰城夜景.jpg" alt="丰城夜景">
+            </div>
+        </section>
+        
+        <section id="features" class="section">
+            <h2>特色亮点</h2>
+            
+            <div class="features-grid">
+                <div class="feature">
+                    <div class="feature-icon">⚔️</div>
+                    <h3>剑文化发源地</h3>
+                    <p>"龙泉、太阿"宝剑传说地，剑池、剑光亭等历史遗迹保存完好。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏺</div>
+                    <h3>洪州窑遗址</h3>
+                    <p>唐代六大青瓷名窑之一，国家级文物保护单位。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">⛰️</div>
+                    <h3>玉华山</h3>
+                    <p>赣中名山，奇石云海，佛教文化圣地。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🏭</div>
+                    <h3>能源重镇</h3>
+                    <p>"江南煤海"，丰城发电厂是江西重要能源基地。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🍚</div>
+                    <h3>富硒农产品</h3>
+                    <p>土壤含硒，出产富硒大米、禽蛋等健康食品。</p>
+                </div>
+                <div class="feature">
+                    <div class="feature-icon">🎋</div>
+                    <h3>传统手工艺</h3>
+                    <p>冻米糖、竹编等传统技艺传承至今。</p>
+                </div>
+            </div>
+            
+            <div style="margin-top: 3rem; background-color: #f0f7f7; padding: 1.5rem; border-radius: 8px;">
+                <h3>丰城三宝</h3>
+                <p><strong>宝剑</strong>：象征丰城悠久的历史文化<br>
+                <strong>青瓷</strong>：代表丰城古代工艺的高超水平<br>
+                <strong>冻米糖</strong>：体现丰城传统饮食文化的精髓</p>
+            </div>
+        </section>
+        
+        <section id="team" class="section">
+            <h2>小组成员</h2>
+            <p style="text-align: center; margin-bottom: 2rem;">我们小组深入研究了丰城的历史文化，以下是我们的成员分工：</p>
+            
+            <div class="team-members">
+                <div class="member">
+                    <img src="https://example.com/member1.jpg" alt="曹宇">
+                    <h4>曹宇</h4>
+                    <p>组长，负责整体架构与历史研究</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member2.jpg" alt="朱凯旋">
+                    <h4>朱凯旋</h4>
+                    <p>文化资料收集与文案撰写</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member3.jpg" alt="柯信淳">
+                    <h4>柯信醇</h4>
+                    <p>图片收集与页面设计</p>
+                </div>
+                <div class="member">
+                    <img src="https://example.com/member4.jpg" alt="饶雨林">
+                    <h4>饶雨林</h4>
+                    <p>特色亮点研究与内容校对</p>
+                </div>
+                <div class="member">
+                    <img src="images\易海.jpg" alt="易海">
+                    <h4>易海</h4>
+                    <p>讲解人，负责内容讲解与展示</p>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <p>&copy; 2025 丰城文化研究小组. 保留所有权利.</p>
+        <p>《地方文化研究》课程作业 | 指导教师：赖炜鹏教授</p>
+        <p style="margin-top: 1rem;">联系我们：fengcheng@example.com</p>
+    </footer>
+</body>
+</html>
